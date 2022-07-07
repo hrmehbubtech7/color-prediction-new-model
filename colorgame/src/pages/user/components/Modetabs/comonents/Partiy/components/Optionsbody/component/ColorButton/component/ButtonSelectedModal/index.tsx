@@ -31,6 +31,7 @@ interface FormData {
   colorSelected: string;
 }
 
+
 export const ButtonSelectedModal: FC<ButtonSelectedModalProps> = ({
   isOpen,
   onClose,
@@ -39,42 +40,48 @@ export const ButtonSelectedModal: FC<ButtonSelectedModalProps> = ({
 }) => {
   const showToast = useToastMessage();
 
-  const {
-    register,
-    handleSubmit,
-    formState,
-    setValue,
-    reset,
-  } = useForm<FormData>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+  const { register, handleSubmit, formState, setValue, reset } =
+    useForm<FormData>({
+      mode: "onChange",
+      reValidateMode: "onChange",
+    });
   setValue("colorSelected", buttonColor);
 
-  const [selectedArray , setSelectedArray] = useState<FormData>()
+  // let selectedArray : FormData[]= []
+  const [selectedArray, setSelectedArray] = useState<FormData[]>([]);
 
   const formSubmitHandle = (data: FormData) => {
-    setSelectedArray(data);
+    setSelectedArray((prevData) => [...prevData, { ...data }]);
+ // selectedArray.push(data)
     reset();
     onClose();
   };
-  console.log(selectedArray)
+  const winnerNumber = Math.floor(Math.random() * 10);
+  let winnerColor: string = "";
+  if (winnerNumber % 2 === 0) {
+    winnerColor = "red";
+  } else {
+    winnerColor = "green";
+  }
+  selectedArray.map((s) => {
+    if (s.colorSelected === winnerColor) {
+      alert(winnerColor);
+    }
+  });
 
-  useEffect(() =>{
-    console.log(formState.isValid)
-  },[
-    formState.isValid
-  ])
+  useEffect(() => {
+    console.log(formState.isValid);
+  }, [formState.isValid]);
   // console.log(selectedArray);
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} >
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent >
+        <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
-          <Grid as='form' onSubmit={handleSubmit(formSubmitHandle)}>
+          <Grid as="form" onSubmit={handleSubmit(formSubmitHandle)}>
             <ModalBody>
               <FormControl>
                 <FormLabel>Add Money</FormLabel>
@@ -87,13 +94,12 @@ export const ButtonSelectedModal: FC<ButtonSelectedModalProps> = ({
               </FormControl>
             </ModalBody>
             <ModalFooter>
-
-            <Button colorScheme="red" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme="facebook"  mr={3} type="submit">
-              Submit
-            </Button>
+              <Button colorScheme="red" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button colorScheme="facebook" mr={3} type="submit">
+                Submit
+              </Button>
             </ModalFooter>
           </Grid>
         </ModalContent>
